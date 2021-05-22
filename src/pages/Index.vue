@@ -78,10 +78,12 @@ export default {
   },
   methods: {
     getLocation() {
+      this.$q.loading.show();
       navigator.geolocation.getCurrentPosition(position => {
         this.lat = position.coords.latitude;
         this.lon = position.coords.longitude;
         this.getWeatherByCoords();
+        this.$q.loading.hide();
       });
     },
     getWeatherByCoords() {
@@ -93,11 +95,14 @@ export default {
       });
     },
     getWeatherBySearch() {
+      this.$q.loading.show();
+
       this.$axios(
         `${this.apiUrl}?q=${this.search}&appid=88ba2bc4848fd043ac403cd03044664d&units=metric`
       ).then(responce => {
         console.log(responce.data);
         this.wetherData = responce.data;
+        this.$q.loading.hide();
       });
     }
   }
