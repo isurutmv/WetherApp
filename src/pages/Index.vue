@@ -14,19 +14,23 @@
     <template v-if="wetherData">
       <div class="col text-white text-center">
         <div class="text-h4 text-weight-light">
-          Gampaha
+          {{ wetherData.name }}
         </div>
         <div class="text-h6 text-weight-light">
-          Rain
+          {{ wetherData.weather[0].main }}
         </div>
         <div class="text-h1 text-weight-thin q-my-lg relative-position">
-          <span>23</span>
-          <span class="text-h4 relative-position degree">&deg;</span>
+          <span>{{ Math.round(wetherData.main.temp) }}</span>
+          <span class="text-h4 relative-position degree">&deg;C</span>
         </div>
       </div>
 
       <div class="col text-center">
-        <img src="" alt="Bill" />
+        <img
+          :src="
+            `https://openweathermap.org/img/wn/${wetherData.weather[0].icon}@2x.png`
+          "
+        />
       </div>
     </template>
     <template v-else>
@@ -51,14 +55,24 @@ export default {
       search: "",
       wetherData: null,
       lat: null,
-      lon: null
+      lon: null,
+      apiUrl: "https://api.openweathermap.org/data/2.5/weather"
     };
   },
   methods: {
     getLocation() {
       navigator.geolocation.getCurrentPosition(position => {
-        this.lat = position.coords.latitude
-        this.lon = position.coords.longitude
+        this.lat = position.coords.latitude;
+        this.lon = position.coords.longitude;
+        this.getWeatherByCoords();
+      });
+    },
+    getWeatherByCoords() {
+      this.$axios(
+        `${this.apiUrl}?lat=${this.lat}&lon=${this.lon}&appid=88ba2bc4848fd043ac403cd03044664d&units=metric`
+      ).then(responce => {
+        console.log(responce.data);
+        this.wetherData = responce.data;
       });
     }
   }
