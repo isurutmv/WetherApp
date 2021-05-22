@@ -1,5 +1,5 @@
 <template>
-  <q-page class="flex column">
+  <q-page class="flex column" :class="bgClass">
     <div class="col q-pt-lg q-px-md">
       <q-input
         @keyup.enter="getWeatherBySearch"
@@ -65,6 +65,17 @@ export default {
       apiUrl: "https://api.openweathermap.org/data/2.5/weather"
     };
   },
+  computed: {
+    bgClass() {
+      if (this.wetherData) {
+        if (this.wetherData.weather[0].icon.endsWith("n")) {
+          return "bg-night";
+        } else {
+          return "bg-day";
+        }
+      }
+    }
+  },
   methods: {
     getLocation() {
       navigator.geolocation.getCurrentPosition(position => {
@@ -95,6 +106,11 @@ export default {
 <style lang="sass">
 .q-page
   background: linear-gradient(to top, #74ebd5, #acb6e5)
+  &.bg-night
+    background: linear-gradient(to top, #e6dada, #274046)
+  &.bg-day
+    background: linear-gradient(to bottom, #076585, #fff)
+
 
   .degree
       top: -45px
